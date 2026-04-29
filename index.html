@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HomeLab Dashboard</title>
+  <style>
+    body { font-family: sans-serif; background: #0f1117; color: #e0e0e0; margin: 0; padding: 2rem; }
+    h1 { font-size: 1.4rem; font-weight: 500; margin-bottom: 1.5rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+    .card { background: #1a1d27; border: 1px solid #2a2d3a; border-radius: 10px; padding: 1.2rem; }
+    .label { font-size: 0.75rem; color: #888; margin-bottom: 0.4rem; }
+    .value { font-size: 1.6rem; font-weight: 500; }
+    .sub { font-size: 0.75rem; color: #666; margin-top: 0.3rem; }
+  </style>
+</head>
+<body>
+  <h1>HomeLab Dashboard</h1>
+  <div class="grid">
+    <div class="card"><div class="label">CPU</div><div class="value" id="cpu">--</div><div class="sub">percent usage</div></div>
+    <div class="card"><div class="label">RAM</div><div class="value" id="ram">--</div><div class="sub">percent used</div></div>
+    <div class="card"><div class="label">Disk</div><div class="value" id="disk">--</div><div class="sub">percent used</div></div>
+    <div class="card"><div class="label">Net sent</div><div class="value" id="sent">--</div><div class="sub">MB total</div></div>
+    <div class="card"><div class="label">Net received</div><div class="value" id="recv">--</div><div class="sub">MB total</div></div>
+    <div class="card"><div class="label">Host</div><div class="value" id="host" style="font-size:1rem;margin-top:0.4rem;">--</div><div class="sub">ubuntu vm</div></div>
+  </div>
+  <script>
+    async function refresh() {
+      const r = await fetch("/api/stats");
+      const d = await r.json();
+      document.getElementById("cpu").textContent = d.cpu + "%";
+      document.getElementById("ram").textContent = d.ram + "%";
+      document.getElementById("disk").textContent = d.disk + "%";
+      document.getElementById("sent").textContent = d.net_sent_mb;
+      document.getElementById("recv").textContent = d.net_recv_mb;
+      document.getElementById("host").textContent = d.hostname;
+    }
+    refresh();
+    setInterval(refresh, 3000);
+  </script>
+</body>
+</html>
